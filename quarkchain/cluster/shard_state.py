@@ -420,6 +420,13 @@ class ShardState:
             raise ValueError("incorrect gas limit, expected %d, actual %d" % (
                 self.env.quark_chain_config.gas_limit, block.header.evm_gas_limit))
 
+        if (
+            self.env.quark_chain_config.ENABLE_TX_TIMESTAMP is not None and
+            self.env.quark_chain_config.ENABLE_TX_TIMESTAMP > block.header.create_time and
+            len(block.tx_list) != 0
+        ):
+            raise ValueError("tx_list should be empty before tx is enabled")
+
         # Make sure merkle tree is valid
         merkle_hash = calculate_merkle_root(block.tx_list)
         if merkle_hash != block.meta.hash_merkle_root:
@@ -982,7 +989,11 @@ class ShardState:
             ancestor_root_header=ancestor_root_header,
         ).get_hash()
 
-        self.__add_transactions_to_block(block, evm_state)
+        if (
+            self.env.quark_chain_config.ENABLE_TX_TIMESTAMP is None or
+            block.header.create_time >= self.env.quark_chain_config.ENABLE_TX_TIMESTAMP
+        ):
+            self.__add_transactions_to_block(block, evm_state)
 
         # Pay miner
         pure_coinbase_amount = self.get_coinbase_amount()

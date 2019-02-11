@@ -296,6 +296,8 @@ class QuarkChainConfig(BaseConfig):
     # On mining rewards
     REWARD_TAX_RATE = 0.5  # percentage of rewards should go to root block mining
 
+    ENABLE_TX_TIMESTAMP = None
+
     def __init__(self):
         self.loadtest_accounts = (
             []
