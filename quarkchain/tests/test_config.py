@@ -187,7 +187,8 @@ class TestQuarkChainConfig(unittest.TestCase):
         }
     ],
     "SHARDS": null,
-    "REWARD_TAX_RATE": 0.5
+    "REWARD_TAX_RATE": 0.5,
+    "ENABLE_EVM_TIMESTAMP": null
 }"""
         print(config.to_json())
         self.assertEqual(config.to_json(), expected_json)

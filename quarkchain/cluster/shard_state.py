@@ -292,6 +292,14 @@ class ShardState:
                 )
             )
 
+        # Check if EVM is disabled
+        if (
+            evm_tx.to == b"" and
+            self.env.quark_chain_config.ENABLE_EVM_TIMESTAMP is not None and
+            evm_state.timestamp < self.env.quark_chain_config.ENABLE_EVM_TIMESTAMP
+        ):
+            raise RuntimeError("smart contract creation is not allowed before evm is enabled")
+
         # This will check signature, nonce, balance, gas limit
         validate_transaction(evm_state, evm_tx)
 
@@ -999,6 +1007,15 @@ class ShardState:
                 ] + 1 > xshard_tx_limits.get(evm_tx.to_full_shard_id, 0):
                     poped_txs.append(evm_tx)  # will be put back later
                     continue
+
+            # Check if EMV is disabled
+            if (
+                evm_tx.to == b"" and
+                self.env.quark_chain_config.ENABLE_EVM_TIMESTAMP is not None and
+                block.header.create_time < self.env.quark_chain_config.ENABLE_EVM_TIMESTAMP
+            ):
+                # Drop the smart contract creation tx from tx_queue
+                continue
 
             try:
                 tx = Transaction(code=Code.create_evm_code(evm_tx))
