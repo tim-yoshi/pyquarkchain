@@ -304,7 +304,7 @@ def test_qkchash_perf():
 
     start_time = time.time()
     h1 = []
-    N = 100000
+    N = 10000
     for nonce in range(N):
         if nonce>0:
             if nonce%(N/20)==0:
