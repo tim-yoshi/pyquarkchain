@@ -10,7 +10,7 @@ fi
 cpu_count="$(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
 cpu_cores="$(cat /proc/cpuinfo | grep "siblings" | uniq | tr -d ' ' | cut -d: -f2)"
 cpu_type="$(cat /proc/cpuinfo | grep "model name" | uniq | tr -s ' ' | cut -d: -f2)"
-cpu_cores_total=5
+cpu_cores_total=15
 
 if [ "$cpu_count" -gt 0 ] ; then
   for i in $(seq 1 $cpu_count) ; do
